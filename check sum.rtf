@@ -1,0 +1,165 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2513
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 #include <iostream>\
+using namespace std;\
+void merge_sort(int *arr, int low, int high);\
+\
+void checkSumNaive(int a[],int n,int sum)\
+\{\
+    for(int i=0;i<n;i++)        // complexity-n\
+    \{\
+        if(a[i]==sum)\
+        \{\
+            cout<<"["<<i<<"]";\
+            return;\
+        \}\
+    \}\
+    for(int i=0;i<n;i++)            \
+	\{\
+	    for(int j=i;j<n;j++)        // complexity : (n-1)/2\
+	    \{\
+	        if((a[i]+a[j])==sum)\
+	        \{\
+	            cout<<"["<<i<<","<<j<<"]";\
+	            return;\
+	        \}\
+	    \}\
+	\}\
+\}\
+void merge(int *Arr, int start, int mid, int end) \{ // nlogn\
+	// create a temp array\
+	int temp[end - start + 1];\
+\
+	// crawlers for both intervals and for temp\
+	int i = start, j = mid+1, k = 0;\
+\
+	// traverse both arrays and in each iteration add smaller of both elements in temp \
+	while(i <= mid && j <= end) \{\
+		if(Arr[i] <= Arr[j]) \{\
+			temp[k] = Arr[i];\
+			k += 1; i += 1;\
+		\}\
+		else \{\
+			temp[k] = Arr[j];\
+			k += 1; j += 1;\
+		\}\
+	\}\
+\
+	// add elements left in the first interval \
+	while(i <= mid) \{\
+		temp[k] = Arr[i];\
+		k += 1; i += 1;\
+	\}\
+\
+	// add elements left in the second interval \
+	while(j <= end) \{\
+		temp[k] = Arr[j];\
+		k += 1; j += 1;\
+	\}\
+\
+	// copy temp to original interval\
+	for(i = start; i <= end; i += 1) \{\
+		Arr[i] = temp[i - start];\
+	\}\
+\}\
+\
+// Arr is an array of integer type\
+// start and end are the starting and ending index of current interval of Arr\
+\
+void mergeSort(int *Arr, int start, int end) \{ //nlogn\
+\
+	if(start < end) \{\
+		int mid = (start + end) / 2;\
+		mergeSort(Arr, start, mid);\
+		mergeSort(Arr, mid+1, end);\
+		merge(Arr, start, mid, end);\
+	\}\
+\}\
+int binarySearch(int arr[], int l, int r, int x) \
+\{ \
+   if (r >= l) //nlogn\
+   \{ \
+        int mid = l + (r - l)/2; \
+  \
+        if (arr[mid] == x)\{\
+            return mid; \
+        \}\
+        if (arr[mid] > x) return binarySearch(arr, l, mid-1, x); \
+  \
+        return binarySearch(arr, mid+1, r, x); \
+   \} \
+  \
+   // We reach here when element is not present in array \
+   return -1; \
+\} \
+void checkSumComplex(int a[],int b[],int n,int sum)\
+\{\
+    for(int i=0;i<n;i++)\
+    \{\
+        int search=sum-b[i];\
+        int pos = binarySearch(b,0,n,sum);  //logn\
+        if(pos!=-1)\
+        \{\
+            for(int j=0;j<n;j++)    //n\
+            \{\
+                if(a[j]==b[pos])\
+                \{\
+                    cout<<"["<<j<<"]";\
+                \}\
+            \}\
+            return;\
+        \}\
+        else\
+        \{\
+            int pos = binarySearch(b,0,n,search);\
+            if(pos==-1)\
+            \{\
+                continue;\
+            \}\
+            else\{\
+                int flag1=0;\
+                int flag2=0;\
+                for(int j=0;j<n;j++)\
+                \{\
+                 if(a[j]==b[i] && flag1==0)\
+                  \{\
+                      cout<<"["<<j;\
+                      flag1=1;\
+                  \}\
+                  if(a[j]==b[pos] && flag2==0)\
+                  \{\
+                     cout<<","<<j<<"]";\
+                      flag2=1;\
+                  \}\
+                \}\
+                return;\
+            \}\
+        \}\
+    \}\
+\}\
+int main() \{\
+	// your code goes here\
+	int a[100];\
+	cout<<"Enter the size  : ";\
+	int n;\
+	cin>>n;\
+	int b[100];\
+	for(int i=0;i<n;i++)            // n complexity\
+	\{\
+	    cin>>a[i];\
+	    b[i]=a[i];\
+	\}\
+	cout<<"Enter target sum";\
+	int sum;\
+	cin>>sum;\
+	checkSumNaive(a,n,sum);\
+	mergeSort(b,0,n-1);\
+	checkSumComplex(a,b,n,sum);\
+	return 0;\
+\}\
+}
